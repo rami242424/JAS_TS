@@ -146,7 +146,7 @@ rules: {
 
 #### 추가 패키지 설치
 ```sh
-npm i react-router-dom react-hook-form react-csspin react-infinite-scroller recoil recoil-persist zustand @tanstack/react-query @tanstack/react-query-devtools immer lodash react-spinners
+npm i react-router-dom react-hook-form react-csspin react-infinite-scroller recoil recoil-persist zustand @tanstack/react-query @tanstack/react-query-devtools immer lodash
 ```
 
 ### 메인페이지 작성
@@ -612,7 +612,7 @@ export default App;
 * <http://localhost:5173> 접속 테스트
 
 ### 레이아웃 작성
-#### components/layout/index.html
+#### components/layout/index.jsx
 * App.jsx를 복사해서 수정
 ```jsx
 import Header from '@components/layout/Header';
@@ -828,7 +828,7 @@ function Detail() {
               */}
               
             </div>
-            <button type="button" className="bg-orange-500 py-1 px-4 text-sm text-white font-semibold ml-2 hover:bg-amber-400 rounded">댓글 등록</button>
+            <button type="submit" className="bg-orange-500 py-1 px-4 text-sm text-white font-semibold ml-2 hover:bg-amber-400 rounded">댓글 등록</button>
           </form>
         </div>
       </section>
@@ -1084,8 +1084,9 @@ function Error() {
     <div className="flex flex-col min-h-screen dark:bg-gray-700 dark:text-gray-200 transition-color duration-500 ease-in-out">
       <Header />
       <div className="py-20 bg-red-100 border border-red-400 text-red-700 p-4 rounded-lg flex flex-col items-center space-y-2">
-        <h2 className="text-lg font-semibold mb-2 text-center">🚧 앗, 무언가 잘못됐네요!</h2>
-        <p className="text-center">이 오류는 더 나은 서비스를 위한 첫걸음이에요. 조금만 기다려 주세요!</p>
+        <h2 className="text-xl font-semibold mb-2 text-center">🚧 앗, 무언가 잘못됐네요!</h2>
+        <h3 className="text-md font-semibold mb-2 text-center">존재하지 않는 페이지입니다.</h3>
+        <p className="pt-12 text-center">이 오류는 더 나은 서비스를 위한 첫걸음이에요. 조금만 기다려 주세요!</p>
         <button className="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600">
           ⚙️ 문제 해결하기
         </button>
@@ -1184,7 +1185,7 @@ export default Submit;
 <button type="button" className="bg-gray-900 py-1 px-4 text-base text-white font-semibold ml-2 hover:bg-amber-400 rounded" onClick={ () => location.href='/info/1/edit' }>수정</button>
 <button type="button" className="bg-red-500 py-1 px-4 text-base text-white font-semibold ml-2 hover:bg-amber-400 rounded" onClick={ () => location.href='/info' }>삭제</button>
 <button type="button" className="bg-red-500 py-1 px-4 text-sm text-white font-semibold ml-2 hover:bg-amber-400 rounded">삭제</button>
-<button type="button" className="bg-orange-500 py-1 px-4 text-sm text-white font-semibold ml-2 hover:bg-amber-400 rounded">댓글 등록</button>
+<button type="submit" className="bg-orange-500 py-1 px-4 text-sm text-white font-semibold ml-2 hover:bg-amber-400 rounded">댓글 등록</button>
 ```
 
 * 적용후
@@ -1193,7 +1194,7 @@ export default Submit;
 <Button bgColor="gray" onClick={ () => location.href='/info/1/edit' }>수정</Button>
 <Button bgColor="red" onClick={ () => location.href='/info' }>삭제</Button>
 <Button bgColor="red" size="sm">삭제</Button>
-<Button size="sm">댓글 등록</Button>
+<Submit size="sm">댓글 등록</Submit>
 ```
 
 ##### pages/community/Edit.jsx
@@ -1206,7 +1207,7 @@ export default Submit;
 * 적용후
 ```jsx
 <Submit>수정</Submit>
-Button type="reset" bgColor="gray" onClick={ () => history.back() }>취소</Button>
+<Button type="reset" bgColor="gray" onClick={ () => history.back() }>취소</Button>
 ```
 
 ##### pages/community/New.jsx
@@ -1398,7 +1399,7 @@ function CommentNew() {
           */}
           
         </div>
-        <Button size="sm">댓글 등록</Button>
+        <Submit size="sm">댓글 등록</Submit>
       </form>
     </div>
   );
@@ -1705,348 +1706,3 @@ if(res.status === 200){
     + post_id: 게시물 _id
     + reply_id: 댓글 _id
   - Create
-
-
-
-
-
-### API 서버 연동
-#### fetch 커스텀 훅 작성
-* src/hooks/useFetch.js
-```js
-import { useState, useEffect } from 'react';
-
-const API_SERVER = 'http://localhost:3000';
-
-const useFetch = (url, options = {}) => {
-  const [data, setData] = useState(null); // API 응답 데이터 상태
-  const [loading, setLoading] = useState(true); // 로딩 상태
-  const [error, setError] = useState(null); // 에러 상태
-
-  const fetchData = async () => {
-    setData(null);
-    setLoading(true);
-    setError(null);
-    try {
-      if(!url.startsWith('http')){
-        url = API_SERVER + url;
-      }
-
-      const response = await fetch(url, options);
-
-      if (!response.ok) {
-        throw new Error(`2xx 이외의 응답: ${ response.status }`);
-      }
-
-      const result = await response.json();
-      setData(result);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  return { data, loading, error, refetch: fetchData };
-};
-
-export default useFetch;
-```
-
-* src/hooks/useMutation.js
-```js
-const API_SERVER = 'http://localhost:3000';
-
-const useMutation = (url, options = {}) => {
-  const send = async (addOptions = {}) => {
-    if(!url.startsWith('http')){
-      url = API_SERVER + url;
-    }
-
-    options = {
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      ...options,
-      ...addOptions
-    };
-
-    try {
-      const response = await fetch(url, options);
-      if (!response.ok) {
-        throw new Error(`2xx 이외의 응답: ${response.status}`);
-      }
-      const result = await response.json();
-      return result;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  };
-  return { send };
-};
-
-export default useMutation;
-```
-
-#### 할일 목록 조회
-* Todo.jsx
-  - API 서버에서 할일 목록 조회
-  - TodoList에 조회 결과 전달
-  - refetch 전달
-
-```jsx
-......
-import useFetch from "@hooks/useFetch";
-
-function App() {
-  const { loading, data, error, refetch } = useFetch('/todos');
-
-  if(loading) return <p>로딩중...</p>;
-  if(error) return <p>{ error.message }</p>;
-
-  return (
-    ......
-    <TodoInput refetch={ refetch } />
-    <TodoList data={ data } refetch={ refetch } />
-    ......
-  );
-}
-......
-```
-
-* TodoInput.jsx
-  - prop-types 추가
-  
-```jsx
-......
-import PropTypes from 'prop-types';
-
-TodoInput.propTypes = {
-  refetch: PropTypes.func
-};
-
-function TodoInput({ refetch }) {
-  ......
-}
-......
-```
-
-* TodoList.jsx
-  - prop-types 추가
-  - TodoItem에 refetch 전달
-
-```jsx
-......
-import PropTypes from 'prop-types';
-
-TodoList.propTypes = {
-  data: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string,
-      title: PropTypes.string,
-      done: PropTypes.bool,
-    })
-  ).isRequired,
-  refetch: PropTypes.func,
-};
-
-function TodoList({ data, refetch }) {
-  const items = data?.map((item) => <TodoItem key={ item.id } item={ item } refetch={ refetch } />);
-  ......
-}
-......
-```
-
-* TodoItem.jsx
-  - prop-types 추가
-  - item 값 출력
-
-```jsx
-......
-import PropTypes from 'prop-types';
-
-TodoItem.propTypes = {
-  item: PropTypes.shape({
-    id: PropTypes.string,
-    title: PropTypes.string,
-    done: PropTypes.bool,
-  }),
-  refetch: PropTypes.func,
-};
-
-function TodoItem({ item, refetch }) {
-  return (
-    ......
-    <span className={`${ item.done ? 'line-through text-gray-400' : '' } cursor-pointer`} >{ item.title }</span>
-    <input className="flex-grow mr-4 border-2 border-gray-300 p-1" type="text" name="title" value={ item.title } placeholder="내용을 입력하세요." />
-    ......
-  );
-}
-......
-```
-
-### 이벤트 추가
-#### 할일 등록
-* TodoInput.jsx
-  - input 요소의 change 이벤트
-  - 추가 버튼 click 이벤트
-
-```jsx
-import Button from "@components/Button";
-import useMutation from "@hooks/useMutation";
-import { useState } from "react";
-import PropTypes from 'prop-types';
-
-TodoInput.propTypes = {
-  refetch: PropTypes.func
-};
-
-function TodoInput({ refetch }) {
-  const [ title, setTitle ] = useState('');
-  const { send } = useMutation('/todos');
-
-  const handleAdd = async () => {
-    try{
-      await send({
-        method: 'POST',
-        body: JSON.stringify({
-          title,
-          done: false
-        }),
-      });
-      refetch();
-    }catch(err){
-      alert(`에러 ${ err.message }`);
-    }
-  }
-
-  return (
-    <div className="flex mb-4">
-      <input 
-        className="flex-grow border-2 border-gray-300 p-2 rounded-l-lg focus:outline-none focus:border-orange-500" 
-        type="text" 
-        name="title" 
-        placeholder="할일을 입력하세요."
-        value={ title }
-        onChange={ (e) => setTitle(e.target.value) } />
-      <Button size="md" bgColor="blue" onClick={ handleAdd }>추가</Button>
-    </div>
-  );
-}
-
-export default TodoInput;
-```
-
-#### 할일 수정, 삭제, 완료/미완료 처리
-* TodoItem.jsx
-  - 수정 모드 변경
-  - 수정 사항 저장
-  - 수정 취소
-  - 완료/미완료 처리
-  - 삭제
-
-```jsx
-import Button from "@components/Button";
-import Submit from "@components/Submit";
-import useMutation from "@hooks/useMutation";
-import PropTypes from 'prop-types';
-import { useState } from "react";
-
-TodoItem.propTypes = {
-  item: PropTypes.shape({
-    id: PropTypes.string,
-    title: PropTypes.string,
-    done: PropTypes.bool,
-  }),
-  refetch: PropTypes.func,
-};
-
-function TodoItem({ item }) {
-  const [editMode, setEditMode] = useState(false);
-  const [title, setTitle] = useState(item.title);
-  const { send } = useMutation(`/todos/${ item.id }`);
-
-  // 수정 모드로 변경
-  const handleEdit = () => {
-    setEditMode(true);
-  };
-
-  // 수정 사항 저장
-  const handleSave = async (e) => {
-    e.preventDefault();
-    try{
-      await send({
-        method: 'PATCH',
-        body: JSON.stringify({ title })
-      });
-      refetch();
-    }catch(err){
-      alert(`에러 ${ err.message }`);
-    }   
-  };
-
-  // 수정 취소
-  const handleCancel = () => {
-    setTitle(item.title);
-    setEditMode(false);
-  };
-
-  // 완료/미완료 처리
-  const handleDone = async () => {
-    try{
-      await send({
-        method: 'PATCH',
-        body: JSON.stringify({ done: !item.done })
-      });
-      refetch();
-    }catch(err){
-      alert(`에러 ${ err.message }`);
-    }
-  };
-
-  // 삭제
-  const handleDelete = async (e) => {
-    e.preventDefault();
-    try{
-      await send({
-        method: 'DELETE'
-      });
-      refetch();
-    }catch(err){
-      alert(`에러 ${ err.message }`);
-    }
-  };
-
-  return (
-    <li className="flex justify-between p-4 border-b-2 border-gray-200">
-      <form className="flex-grow flex items-center" onSubmit={ handleSave }>
-        { editMode
-          ? <input className="flex-grow mr-4 border-2 border-gray-300 p-1" type="text" name="title" value={ title } onChange={ (e) => setTitle(e.target.value) } placeholder="내용을 입력하세요." />
-          : <span className={`${ item.done ? 'line-through text-gray-400' : '' } cursor-pointer`} onClick={ () => handleDone() }>{ title }</span>
-        }
-
-        <div className="flex ml-auto">
-          { editMode 
-            ? <>
-                <Submit size="sm" bgColor="blue">저장</Submit>
-                <Button type="reset" size="sm" onClick={ () => handleCancel() }>취소</Button>
-              </>
-            
-            : <>
-                <Button size="sm" onClick={ handleEdit }>수정</Button>
-                <Submit size="sm" bgColor="red" onClick={ handleDelete }>삭제</Submit>
-              </>
-          }
-        </div>
-      </form>
-    </li>
-  );
-}
-
-export default TodoItem;
-```
