@@ -49,7 +49,7 @@ function CommentItem({ item }) {
         <time className="ml-auto text-gray-500" dateTime={ item.updatedAt }>{ item.updatedAt }</time>
       </div>
       <div className="flex justify-between items-center mb-2">
-        <pre className="whitespace-pre-wrap text-sm">{ item.comment }</pre>
+        <pre className="whitespace-pre-wrap text-sm">{ item.content }</pre>
         { user?._id === item.user._id && (
           <Button bgColor="red" size="sm" onClick={ handleDelete }>삭제</Button>
         ) }
