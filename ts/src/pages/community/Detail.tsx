@@ -2,8 +2,7 @@ import { OneItem, Post } from "#types/index";
 import Button from "@components/Button";
 import CommentList from "@pages/community/CommentList";
 import { userState } from "@recoil/user/atoms";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 

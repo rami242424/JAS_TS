@@ -4,8 +4,7 @@ import Pagination from "@components/Pagination";
 import Search from "@components/Search";
 import ListItem from "@pages/community/ListItem";
 import { userState } from "@recoil/user/atoms";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import Spinner from "@components/Spinner";
