@@ -398,7 +398,6 @@ import Community from "@pages/community";
 import Detail from "@pages/community/Detail";
 import List from "@pages/community/List";
 import New from "@pages/community/New";
-import CommentList from "@pages/community/CommentList";
 import Login from "@pages/user/Login";
 import Signup from "@pages/user/Signup";
 import { createBrowserRouter } from "react-router-dom";
@@ -420,13 +419,7 @@ const router = createBrowserRouter([
       },
       {
         path: ":type/:_id",
-        element: <Detail />,
-        children: [
-          {
-            index: true,
-            element: <CommentList />
-          }
-        ]
+        element: <Detail />
       },
       {
         path: ":type/new",
