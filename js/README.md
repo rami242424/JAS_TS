@@ -146,7 +146,7 @@ rules: {
 
 #### 추가 패키지 설치
 ```sh
-npm i react-router-dom react-hook-form react-csspin react-infinite-scroller recoil recoil-persist zustand @tanstack/react-query @tanstack/react-query-devtools immer lodash
+npm i react-router-dom react-hook-form react-spinners react-infinite-scroller recoil recoil-persist zustand @tanstack/react-query @tanstack/react-query-devtools
 ```
 
 ### 메인페이지 작성
