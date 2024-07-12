@@ -11,12 +11,17 @@ function Pagination({ totalPage, current = 1 }: PaginationProps) {
   const pageList = [];
 
   for (let page = 1; page <= totalPage; page++) {
-    searchParams.set('page', String(page));
+    if(page === 1){
+      searchParams.delete('page');
+    }else{
+      searchParams.set('page', String(page));
+    }
+    
     const search = searchParams.toString();
     pageList.push(
       <li
         key={page}
-        className={current === page ? 'text-bold text-gray-400' : ''}
+        className={current === page ? 'font-bold text-blue-700' : ''}
       >
         <Link to={`/${type}?${search}`}>{ page }</Link>
       </li>,

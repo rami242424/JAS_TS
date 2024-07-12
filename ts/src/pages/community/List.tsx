@@ -11,28 +11,13 @@ import Spinner from "@components/Spinner";
 
 const SERVER = import.meta.env.VITE_API_SERVER;
 
-// const fetchData: Promise<any> = async (url: string) => {
-//   const response = await fetch(`${SERVER}${url}`);
-//   if (!response.ok) {
-//     throw new Error('오류 발생!');
-//   }
-//   return response.json();
-// };
-
-
 const fetchData = async (url: string): Promise<ApiRes<ListType<Post>>> => {
-  const response = await fetch(`${SERVER}${url}`);
-  // if (!response.ok) {
-  //   throw new Error('오류 발생!');
-  // }
-  return response.json();
+  const res = await fetch(`${SERVER}${url}`);
+  return res.json();
 };
 
-function List() {
-
+function getTitle(type: string | undefined){
   let title = '기타 게시판';
-
-  const { type } = useParams();
 
   switch(type){
     case 'info':
@@ -45,66 +30,49 @@ function List() {
       title = '질문 게시판';
       break;
   }
+  return title;
+}
 
+function List() {
+  const { type } = useParams(); // { type: 'info' }
+  const title = getTitle(type);
+  
   const navigate = useNavigate();
-  // { type: 'info' }
+  
+  const [searchParams, setSearchParams] = useSearchParams(); // /page=3&keyword=hello
 
-
-  // /info?page=3&keyword=hello
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const { isLoading, data, error, refetch } = useQuery({
-  // const { isLoading, data, error, refetch } = useSuspenseQuery({
-    // queryKey: [queryString],
-    // queryKey: [params.type],
-    queryKey: ['posts', type],
-    queryFn: () => {
-      if(type){
-        searchParams.set('type', type);
-      }
-      searchParams.set('limit', '5');
-      searchParams.set('delay', '1000');
-      return fetchData(`/posts?${searchParams.toString()}`); // Promise를 반환하는 함수
+  const { isLoading, data, error } = useQuery({
+  // const { isLoading, data, error } = useSuspenseQuery({
+    queryKey: ['posts', type, searchParams.toString()],
+    queryFn: () => { // Promise를 반환하는 함수
+      const url = `/posts?${searchParams.toString()}&type=${type}&limit=5&delay=1000`;
+      return fetchData(url);
     },
-    // select: res => res.item,
-    staleTime: 1000*10, // 쿼리 실행 후 캐시가 유지되는 시간(기본, 0)
-    // suspense: true, // Suspense 사용 여부
+    staleTime: 1000*10, // 쿼리 실행 후 캐시가 유지되는 시간(기본 0)
   });
 
-  console.log(data);
-
-  // TODO: 추가하면 캐시 안되고 매번 서버에 요청함
-  // useEffect(() => {
-  //   console.log('searchParams.toString()', searchParams.toString());
-  //   refetch();
-  // }, [searchParams.toString()]);
-
-
   const user = useRecoilValue(userState);
-  const handleNewPost = () => {
+  const handleNewPost = () => { // 글작성
+    const url = `/${type}/new`;
     if(!user){
       const gotoLogin = confirm('로그인 후 이용 가능합니다.\n로그인 페이지로 이동하시겠습니까?');
-      gotoLogin && navigate('/user/login', { state: { from: `/${type}/new` } });
+      gotoLogin && navigate('/user/login', { state: { from: url } });
     }else{
-      navigate(`/${type}/new`);
+      navigate(url);
     }
   }
 
   // 검색 요청시 주소의 query string 수정
   const handleSearch = (keyword: string) => {
-    searchParams.delete('type');
+    // searchParams.delete('type');
     searchParams.set('keyword', keyword);
     searchParams.set('page', '1');
     setSearchParams(searchParams);
-    refetch();
   };
 
-  // if(data?.ok == 0){
-  //   return new Error(data.message);
-  // }
   let itemList: JSX.Element[] = [];
   if(data?.ok){
-    itemList = data?.item?.map(item => <ListItem key={ item._id } item={ item } />);
+    itemList = data.item.map(item => <ListItem key={ item._id } item={ item } />);
   }
 
   return (
