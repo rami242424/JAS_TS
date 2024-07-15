@@ -5,9 +5,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
+const SERVER= import.meta.env.VITE_API_SERVER;
+
 // 게시물 목록 찾아서 응답하게 만드는 것
 async function fetchPost(_id){
-  const url = `https://api.fesp.shop/posts/${_id}`;
+  const url = `${SERVER}/posts/${_id}`;
   const res = await fetch(url); // 비동기함수 : 호출하자마자 리턴(작업 완료되기 전에)
   return res.json();
 }

@@ -98,8 +98,10 @@ import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+const SERVER= import.meta.env.VITE_API_SERVER;
+
 async function fetchPosts(type){
-  const url = `https://api.fesp.shop/posts?type=${type}&delay=5000`;
+  const url = `SERVER/posts?type=${type}&delay=5000`;
   const res = await fetch(url);
   return res.json();
 }
