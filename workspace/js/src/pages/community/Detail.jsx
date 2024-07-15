@@ -1,5 +1,7 @@
+import Spinner from "@/components/Spinner";
 import Submit from "@/components/Submit";
 import CommentList from "@/pages/community/CommentList";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
@@ -11,20 +13,26 @@ async function fetchPost(_id){
 }
 
 export default function Detail(){
+  const { type, _id } = useParams(); // type을 꺼내기 위해서 사용
 
-  const { _id, type } = useParams(); // type을 꺼내기 위해서 사용
-  
-  const [data, setData] = useState(null);
+  const { isLoading, data, error } = useQuery({
+    queryKey: [type, _id],
+    queryFn: () => {
+      return fetchPost(_id);
+    },
+    select: resData => resData.item,
+    staleTime: 1000*3
+  });
 
-  const fetchData = async (_id) => {
-    const result = await fetchPost(_id);
-    setData(result.item);
-  }
+  // const [data, setData] = useState(null);
+  // const fetchData = async (_id) => {
+  //   const result = await fetchPost(_id);
+  //   setData(result.item);
+  // }
 
-  
-  useEffect(() => { // 화면에 렌더링 되고 난 후 효과들(함수가 최종 리턴을 한후에 useEffect 안에서 동작)
-    fetchData(_id);
-  }, []);
+  // useEffect(() => { // 화면에 렌더링 되고 난 후 효과들(함수가 최종 리턴을 한후에 useEffect 안에서 동작)
+  //   fetchData(_id);
+  // }, []);
 
 
   return (
@@ -48,14 +56,12 @@ export default function Detail(){
       </section>
 
       {/* 부분 화면 로딩중 */}
-      {/*
-      <div className="flex flex-col items-center">
-        <h3 className="mb-4 text-lg font-semibold">잠시만 기다려주세요.</h3>
-        <span>로딩중...</span>
-      </div>
-      */}
+      { isLoading && (
+        <Spinner.TargetArea />
+      ) }
+     
       
-      <CommentList />
+      <CommentList replies={ data?.replies }/>
 
     </main>
   );

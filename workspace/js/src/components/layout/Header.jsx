@@ -1,4 +1,5 @@
 import Theme from "@/components/Theme";
+import { Link } from "react-router-dom";
 
 export default function Header(){
   return (
@@ -12,9 +13,9 @@ export default function Header(){
         </div>
         <div className="w-auto order-2 text-base mt-4 md:mt-0">
           <ul className="flex items-center gap-6 uppercase">
-            <li className="hover:text-amber-500 hover:font-semibold"><a href="/info">정보공유</a></li>
-            <li className="hover:text-amber-500 hover:font-semibold"><a href="/free">자유게시판</a></li>
-            <li className="hover:text-amber-500 a:font-semibold"><a href="/qna">질문게시판</a></li>
+            <li className="hover:text-amber-500 hover:font-semibold"><Link to="/info">정보공유</Link></li>
+            <li className="hover:text-amber-500 hover:font-semibold"><Link to="/free">자유게시판</Link></li>
+            <li className="hover:text-amber-500 a:font-semibold"><Link to="/qna">질문게시판</Link></li>
           </ul>
         </div>
 
