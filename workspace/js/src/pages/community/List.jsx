@@ -1,6 +1,7 @@
 import Pagination from "@/components/Pagination";
 import Search from "@/components/Search";
 import ListItem from "@/pages/community/ListItem";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -14,19 +15,17 @@ async function fetchPosts(type){
 export default function List(){
   const { type } = useParams(); // type을 꺼내기 위해서 사용
   
-  const [data, setData] = useState([]);
 
-  const fetchData = async (type) => {
-    const result = await fetchPosts(type);
-    setData(result.item);
-  }
+  const { isLoading, data, error } = useQuery({ // 캐시 줄이기 위해 사용
+    queryKey: [type],
+    queryFn: () => {
+      // Promise 반환하는 함수
+      return fetchPosts(type);
+    },
+    staleTime: 1000*10, // 쿼리 실행 후 캐시가 유지되는 시간(기본0)
+  }); 
 
-  
-  useEffect(() => { // 화면에 렌더링 되고 난 후 효과들(함수가 최종 리턴을 한후에 useEffect 안에서 동작)
-    fetchData(type);
-  }, []);
-
-  const list = data.map( item => <ListItem key={item._id} item={ item } /> );
+  const list = data?.item?.map( item => <ListItem key={item._id} item={ item } /> );
 
   return (
     <main className="min-w-80 p-10">
