@@ -1,20 +1,14 @@
-import Submit from "@components/Submit";
-import { useState } from "react";
+import Submit from "@/components/Submit";
 
-function Search({ handleSearch }) {
-  const [keyword, setKeyword] = useState('');
-
+export default function Search(){
   return (
-    <form>
+    <form action="#">
       <input
         className="dark:bg-gray-600 bg-gray-100 p-1 rounded"
         type="text"
         name="keyword"
-        onChange={ e => setKeyword(e.target.value)}
-      />
-      <Submit onClick={ e => { e.preventDefault(); handleSearch(keyword) } }>검색</Submit>
+      />          
+      <Submit>검색</Submit>
     </form>
   );
 }
-
-export default Search;

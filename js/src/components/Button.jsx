@@ -1,10 +1,4 @@
-function Button({
-  children,
-  type = 'button',
-  bgColor = 'orange',
-  size = 'md',
-  ...rest
-}) {
+export default function Button({ children, type = 'button', bgColor = 'orange', size = 'md', ...rest }) {
   let btnColor = {
     gray: `bg-gray-900`,
     orange: 'bg-orange-500',
@@ -26,5 +20,3 @@ function Button({
     </button>
   );
 }
-
-export default Button;

@@ -1,5 +1,3 @@
-function Spinner() {
-  
+export default function Spinner(){
+  return ;
 }
-
-export default Spinner;
