@@ -9,7 +9,7 @@ export default function Signup(){
   async function addUser(formData) {
     try{
         // 이미지 업로드
-      if(formData.attach.length > 0){
+      if(formData.attach.length > 0){ // 업로드 할 사진이 첨부됐다면,
         const body = new FormData();
         body.append('attach', formData.attach[0]);
         const fileRes = await fetch(`${SERVER}/files`, {
@@ -27,6 +27,8 @@ export default function Signup(){
       }
       // 회원 가입
       formData.type = 'user';
+      delete formData.attach;
+      
   
       const res = await fetch(`${SERVER}/users`, {
         method: 'POST',

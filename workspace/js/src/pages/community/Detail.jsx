@@ -17,7 +17,7 @@ async function fetchPost(_id){
 export default function Detail(){
   const { type, _id } = useParams(); // type을 꺼내기 위해서 사용
 
-  const { isLoading, data, error } = useQuery({
+  const { isLoading, data } = useQuery({
     queryKey: [type, _id],
     queryFn: () => {
       return fetchPost(_id);
